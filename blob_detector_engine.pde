@@ -20,40 +20,31 @@ void setup() {
   // load data directory
   loadDirectory(data_path);
   
-  // load an image.
-  try {
-    currentImage = loadFile(fileCounter);
-  } catch (Exception e) {
-    // if we have reached the end of the directory, exit
-    if(fileCounter >= files.length - 1) {
-      println("end of directory reached");
-      exit();
-    } else {
-      // skip this file and keep going
-      println(e);
-      println("unable to load image file from directory");
-      println("fileCounter = " + fileCounter);
-    }
-  }
 }
 
 
 void draw() {
-  
+  // load an image.
+  if(fileCounter <= files.length - 1) {
+    if (checkFile(fileCounter)) {
+       currentImage = loadImage(files[fileCounter]);
+       println("loading " + files[fileCounter]);
+    } 
+  } else {
+    println("end of directory reached");
+    exit();
+  }
+  fileCounter++;
 }
 
 
-PImage loadFile(int counter) {
+boolean checkFile(int counter) {
   File thisFile = new File(path + "/" + files[counter]);
   String mimeType = URLConnection.guessContentTypeFromName(thisFile.getName());
   if(mimeType.contains("image")) {
-    println("loading " + files[counter]);
-    PImage frame = loadImage(files[counter]);
-    return frame;
+    return true;
   } else {
-    fileCounter++;
-    loadFile(fileCounter);
-    return new PImage();
+     return false; 
   }
 }
 
